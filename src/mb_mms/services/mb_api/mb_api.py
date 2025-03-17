@@ -27,13 +27,18 @@ class MB_API:
         except Exception as err:
             print('unexpected error:', err)
 
-    def calculate_mms(self, rates=None, delta=30):
+    def calculate_mms(self, delta:int, rates=None):
         assert rates is not None
         mms = []
-        for idx in range(len(rates)):
-            if idx < delta:
-                mms.append((rates[idx][1], None))
-                continue
-            slice_rates = rates[idx-delta:idx]
-            mms.append((rates[idx][1], sum([register[0] for register in slice_rates])/delta))
-        return mms
+        delta_offset = delta - 1
+        try:
+            for idx in range(len(rates)):
+                if idx < delta_offset:
+                    mms.append((None, rates[idx][1]))
+                    continue
+                slice_rates = rates[idx-delta_offset:idx]
+                mms.append((sum([register[0] for register in slice_rates])/delta, rates[idx][1]))
+            return mms
+        except Exception as err:
+            print(err)
+            return []

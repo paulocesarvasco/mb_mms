@@ -6,6 +6,7 @@ class MB_API:
     def __init__(self) -> None:
         pass
 
+
     def request_rate(self, pair:str, start, end):
         try:
             url = os.getenv('MB_API', '').format(pair, start, end)
@@ -26,6 +27,7 @@ class MB_API:
             print('request error:', err)
         except Exception as err:
             print('unexpected error:', err)
+
 
     def calculate_mms(self, delta:int, rates=None):
         assert rates is not None

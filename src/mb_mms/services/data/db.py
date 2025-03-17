@@ -1,30 +1,30 @@
 import os
 import click
-import mariadb
 from flask import current_app, g
+from sqlalchemy import create_engine, text
+from sqlalchemy.orm import Session
 
-def get_db():
+
+def get_db_engine():
     if 'db' not in g:
-        conn_params = {
-            'user': os.getenv('DB_USER'),
-            'password': os.getenv('DB_PASSWORD'),
-            'host': os.getenv('DB_HOST'),
-            'database': os.getenv('DB_DATABASE')
-        }
-        g.db = mariadb.connect(**conn_params)
+        g.db = create_engine(os.getenv('DB_URL', ''), echo=True)
     return g.db
 
 
 def exec_migrations():
-    c = get_db().cursor()
-
     # TODO: improve to handler more than 1 file
     with current_app.open_resource('migrations/migration_0.sql', mode='r') as f:
-        stats = f.read().strip().split(';')
-        [c.execute(stat) for stat in stats if stat != '']
+        stmts = f.read().strip().split(';')
+        with Session(get_db_engine()) as session:
+            try:
+                [session.execute(text(stmt)) for stmt in stmts if stmt != '']
+                session.commit()
+            except Exception as err:
+                session.rollback()
+                print('migration error: ', err)
 
 
-def close_db(e=None):
+def close_session(e=None):
     db_conn = g.pop('db', None)
 
     if db_conn is not None:
@@ -37,5 +37,5 @@ def init_db_command():
     click.echo('Initialized the database.')
 
 def init_app(app):
-    app.teardown_appcontext(close_db)
+    # app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)

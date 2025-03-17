@@ -1,16 +1,21 @@
 from flask import Flask
 from dotenv import load_dotenv
 
-from mb_mms.api.routes import currency_bp
-from mb_mms.services.data import db
 
 def create_app():
     load_dotenv()
 
     app = Flask(__name__)
 
+    from mb_mms.api.routes import currency_bp
     app.register_blueprint(currency_bp)
 
-    db.init_app(app)
+
+    from mb_mms.services.data import commands as db_commands
+    app.cli.add_command(db_commands.init_db_command)
+
+    from mb_mms.services.mb_api import commands as mb_commads
+    app.cli.add_command(mb_commads.populate_db)
+
 
     return app

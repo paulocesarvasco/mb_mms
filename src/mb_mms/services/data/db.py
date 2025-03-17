@@ -3,11 +3,6 @@ import os
 from flask import current_app, g
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
-from mb_mms.services.data import commands
-
-def init_app(app):
-    app.cli.add_command(commands.init_db_command)
-    app.cli.add_command(commands.populate_db_command)
 
 
 def get_db_engine():

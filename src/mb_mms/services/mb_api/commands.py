@@ -40,6 +40,7 @@ def populate_db():
                 session.commit()
             except Exception as err:
                 session.rollback()
-                click.echo(message=err, err=True)
+                click.echo(message=err, err=True, color=True)
+                return
 
-        click.echo('Database populated.')
+    click.echo('Database populated.')

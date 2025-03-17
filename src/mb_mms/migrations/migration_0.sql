@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS moving_averages;
 
+
 CREATE TABLE moving_averages (
   id INT NOT NULL AUTO_INCREMENT,
   pair VARCHAR(10) NOT NULL,
@@ -8,5 +9,5 @@ CREATE TABLE moving_averages (
   mms_50 FLOAT NULL,
   mms_200 FLOAT NULL,
   PRIMARY KEY (id),
-  INDEX idx_pair_timestamp (pair, timestamp)
+  CONSTRAINT unique_pair_timestamp UNIQUE (pair, timestamp)
 );

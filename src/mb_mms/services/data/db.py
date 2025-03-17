@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 def get_db_engine():
     if 'db' not in g:
-        g.db = create_engine(os.getenv('DB_URL', ''), echo=True)
+        g.db = create_engine(os.getenv('DB_URL', ''), echo=False)
     return g.db
 
 

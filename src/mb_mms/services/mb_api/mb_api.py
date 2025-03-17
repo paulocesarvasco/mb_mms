@@ -1,6 +1,10 @@
 import os
-from requests import HTTPError, Session
+from requests import  HTTPError, Session
 from http import HTTPStatus
+from sqlalchemy import select
+
+from mb_mms.models.pair_averages import MovingAverage
+from mb_mms.services.data import db
 
 class MB_API:
     def __init__(self) -> None:
@@ -44,3 +48,30 @@ class MB_API:
         except Exception as err:
             print(err)
             return []
+
+    def search_mms(self, pair:str, start:int, end:int, precision:int):
+
+        with db.get_db_engine().connect() as conn:
+            match precision:
+                case 20:
+                    stmt = (
+                        select(MovingAverage.timestamp, MovingAverage.mms_20)
+                        .where(MovingAverage.pair == pair)
+                        .where(MovingAverage.timestamp.between(start, end))
+                    )
+                case 50:
+                    stmt = (
+                        select(MovingAverage.timestamp, MovingAverage.mms_50)
+                        .where(MovingAverage.pair == pair)
+                        .where(MovingAverage.timestamp.between(start, end))
+                    )
+                case 200:
+                    stmt = (
+                        select(MovingAverage.timestamp, MovingAverage.mms_200)
+                        .where(MovingAverage.pair == pair)
+                        .where(MovingAverage.timestamp.between(start, end))
+                        )
+                case _:
+                    raise ValueError
+            res = conn.execute(stmt).all()
+            return [r._asdict() for r in res]

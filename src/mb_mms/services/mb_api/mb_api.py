@@ -1,4 +1,5 @@
 import os
+from typing import Any, List, Tuple
 from requests import  HTTPError, Session
 from http import HTTPStatus
 from sqlalchemy import select
@@ -27,13 +28,23 @@ class MB_API:
 
         except ValueError as err:
             print('parameters error:', err)
+            return []
         except HTTPError as err:
             print('request error:', err)
+            return []
         except Exception as err:
             print('unexpected error:', err)
+            return []
 
 
-    def calculate_mms(self, delta:int, rates=None):
+    def mms(self, rates: List[Tuple[Any, Any]]):
+        if len(rates) == 0:
+            return (0, 0)
+
+        return (sum([rate[0] for rate in rates])/len(rates), rates[len(rates)-1][1])
+
+
+    def sliding_mms(self, delta:int, rates=None):
         assert rates is not None
         mms = []
         delta_offset = delta - 1
@@ -42,12 +53,13 @@ class MB_API:
                 if idx < delta_offset:
                     mms.append((None, rates[idx][1]))
                     continue
-                slice_rates = rates[idx-delta_offset:idx]
-                mms.append((sum([register[0] for register in slice_rates])/delta, rates[idx][1]))
+                slice_rates = rates[idx-delta_offset:idx+1]
+                mms.append(self.mms(slice_rates))
             return mms
         except Exception as err:
             print(err)
             return []
+
 
     def search_mms(self, pair:str, start:int, end:int, precision:int):
 

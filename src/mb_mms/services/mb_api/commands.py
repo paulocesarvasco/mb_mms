@@ -1,6 +1,7 @@
 import os
 import click
 import time
+import pytz
 
 from datetime import datetime, timedelta
 from mb_mms.models.pair_averages import MovingAverage
@@ -12,19 +13,19 @@ from sqlalchemy.orm import Session
 @click.command('populate-db')
 def populate_db():
     mb = MB_API()
-    end_time = datetime.now().strftime('%Y-%m-%d')
-    start_time = (datetime.now() - timedelta(days=365)).strftime('%Y-%m-%d')
+    end_time = datetime.now(pytz.timezone("America/Sao_Paulo")) - timedelta(days=1)
+    start_time = (end_time - timedelta(days=365)).strftime('%Y-%m-%d')
 
-    end_time_unix = int(time.mktime(datetime.strptime(end_time, "%Y-%m-%d").timetuple()))
+    end_time_unix = int(time.mktime(datetime.strptime(end_time.strftime('%Y-%m-%d'), "%Y-%m-%d").timetuple()))
     start_time_unix = int(time.mktime(datetime.strptime(start_time, "%Y-%m-%d").timetuple()))
 
     pairs = os.getenv('PAIRS', '').split(',')
 
     for pair in pairs:
         rates = mb.request_rate(pair=pair, start=start_time_unix, end=end_time_unix)
-        mms_20 = mb.calculate_mms(delta=20, rates=rates)
-        mms_50 = mb.calculate_mms(delta=50, rates=rates)
-        mms_200 = mb.calculate_mms(delta=200, rates=rates)
+        mms_20 = mb.sliding_mms(delta=20, rates=rates)
+        mms_50 = mb.sliding_mms(delta=50, rates=rates)
+        mms_200 = mb.sliding_mms(delta=200, rates=rates)
 
         if len(mms_20) != len(mms_50) != len(mms_200):
             click.echo(message='inconsistent rates', err=True)

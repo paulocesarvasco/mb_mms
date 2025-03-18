@@ -503,6 +503,26 @@ pluggy = ">=1.5,<2"
 dev = ["argcomplete", "attrs (>=19.2)", "hypothesis (>=3.56)", "mock", "pygments (>=2.7.2)", "requests", "setuptools", "xmlschema"]
 
 [[package]]
+name = "pytest-flask"
+version = "1.3.0"
+description = "A set of py.test fixtures to test Flask applications."
+optional = false
+python-versions = ">=3.7"
+groups = ["main"]
+files = [
+    {file = "pytest-flask-1.3.0.tar.gz", hash = "sha256:58be1c97b21ba3c4d47e0a7691eb41007748506c36bf51004f78df10691fa95e"},
+    {file = "pytest_flask-1.3.0-py3-none-any.whl", hash = "sha256:c0e36e6b0fddc3b91c4362661db83fa694d1feb91fa505475be6732b5bc8c253"},
+]
+
+[package.dependencies]
+Flask = "*"
+pytest = ">=5.2"
+Werkzeug = "*"
+
+[package.extras]
+docs = ["Sphinx", "sphinx-rtd-theme"]
+
+[[package]]
 name = "pytest-mock"
 version = "3.14.0"
 description = "Thin-wrapper around the mock package for easier use with pytest"
@@ -790,4 +810,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "95f887cced1c1b745c2102cb5711695d3eeb9eac100fae8f691af8971c69834a"
+content-hash = "1a751d3e4075405c0ad067104a32ec472e690e41bdbc19a6b8917b76eea6d740"

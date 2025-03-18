@@ -13,11 +13,11 @@ from sqlalchemy.orm import Session
 @click.command('populate-db')
 def populate_db():
     mb = MB_API()
-    end_time = datetime.now(pytz.timezone("America/Sao_Paulo")) - timedelta(days=1)
+    end_time = datetime.now(pytz.timezone('America/Sao_Paulo')) - timedelta(days=1)
     start_time = (end_time - timedelta(days=365)).strftime('%Y-%m-%d')
 
-    end_time_unix = int(time.mktime(datetime.strptime(end_time.strftime('%Y-%m-%d'), "%Y-%m-%d").timetuple()))
-    start_time_unix = int(time.mktime(datetime.strptime(start_time, "%Y-%m-%d").timetuple()))
+    end_time_unix = int(time.mktime(datetime.strptime(end_time.strftime('%Y-%m-%d'), '%Y-%m-%d').timetuple()))
+    start_time_unix = int(time.mktime(datetime.strptime(start_time, '%Y-%m-%d').timetuple()))
 
     pairs = os.getenv('PAIRS', '').split(',')
 

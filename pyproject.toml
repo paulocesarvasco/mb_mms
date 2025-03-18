@@ -16,6 +16,8 @@ dependencies = [
     "flask-apscheduler (>=1.13.1,<2.0.0)",
     "pytz (>=2025.1,<2026.0)",
     "tenacity (>=9.0.0,<10.0.0)",
+    "pytest (>=8.3.5,<9.0.0)",
+    "pytest-mock (>=3.14.0,<4.0.0)",
 ]
 
 [tool.poetry]

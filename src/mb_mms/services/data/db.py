@@ -27,13 +27,3 @@ def exec_migrations():
             except Exception as err:
                 session.rollback()
                 print('migration error: ', err)
-
-
-def save_object(obj=None):
-    with Session(get_db_engine()) as session, session.begin():
-        try:
-            session.add(obj)
-            session.commit()
-        except Exception as err:
-            session.rollback()
-            print('failed to save on db: ', err)

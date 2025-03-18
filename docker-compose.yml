@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mb
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - mb_network
+
+  mb_mms:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mb_mms
+    environment:
+      DB_USER: mysql
+      DB_PASSWORD: mysql
+      DB_HOST: mysql
+      DB_DATABASE: mb
+      DB_URL: mysql+pymysql://mysql:mysql@mysql:3306/mb
+      MB_API: https://mobile.mercadobitcoin.com.br/v4/{}/candle?from={}&to={}&precision=1d
+      PAIRS: BRLBTC,BRLETH
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql
+    networks:
+      - mb_network
+
+volumes:
+  mysql_data:
+
+networks:
+  mb_network:
+    driver: bridge

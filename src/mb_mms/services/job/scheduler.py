@@ -4,6 +4,8 @@ import pytz
 from datetime import datetime, timedelta
 from flask_apscheduler import APScheduler
 from tenacity import retry, wait_fixed
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
+
 
 from mb_mms.models.pair_averages import MovingAverage
 from mb_mms.services.data import db
@@ -13,24 +15,34 @@ from mb_mms.services.mb_api.mb_api import MB_API
 class Scheduler:
     scheduler = APScheduler()
 
-    def __init__(self, max_retries=10):
+    def __init__(self, app, max_retries=10):
+
+        self.scheduler.init_app(app=app)
+
+        self.scheduler.scheduler.add_jobstore(
+            jobstore=SQLAlchemyJobStore(url=os.getenv('DB_URL'))
+        )
 
         self.scheduler.add_job(
             id='last_rate',
             func=self.compute_mms,
-            trigger='cron',
             hour=0, minute=1, second=0,
-            timezone=pytz.timezone('America/Sao_Paulo')
+            max_instances=1,
+            replace_existing=True,
+            timezone=pytz.timezone('America/Sao_Paulo'),
+            trigger='cron',
         )
 
         self.max_retries = max_retries
         self.attempts = 0
+
 
     def register_retry(self):
         self.attempts += 1
         if self.attempts > self.max_retries:
             # TODO: throw alert
             print('maximum retries reached')
+
 
     @retry(wait=wait_fixed(600))
     def compute_mms(self):

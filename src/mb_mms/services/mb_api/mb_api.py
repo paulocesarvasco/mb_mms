@@ -55,19 +55,19 @@ class MB_API:
             match precision:
                 case 20:
                     stmt = (
-                        select(MovingAverage.timestamp, MovingAverage.mms_20)
+                        select(MovingAverage.timestamp, MovingAverage.mms_20.label('mms'))
                         .where(MovingAverage.pair == pair)
                         .where(MovingAverage.timestamp.between(start, end))
                     )
                 case 50:
                     stmt = (
-                        select(MovingAverage.timestamp, MovingAverage.mms_50)
+                        select(MovingAverage.timestamp, MovingAverage.mms_50.label('mms'))
                         .where(MovingAverage.pair == pair)
                         .where(MovingAverage.timestamp.between(start, end))
                     )
                 case 200:
                     stmt = (
-                        select(MovingAverage.timestamp, MovingAverage.mms_200)
+                        select(MovingAverage.timestamp, MovingAverage.mms_200.label('mms'))
                         .where(MovingAverage.pair == pair)
                         .where(MovingAverage.timestamp.between(start, end))
                         )

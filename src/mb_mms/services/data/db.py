@@ -11,6 +11,11 @@ def get_db_engine():
     return g.db
 
 
+def get_db_session():
+    engine = create_engine(os.getenv('DB_URL', ''), echo=False)
+    return Session(engine)
+
+
 def exec_migrations():
     # TODO: improve to handler more than 1 file
     with current_app.open_resource('migrations/migration_0.sql', mode='r') as f:

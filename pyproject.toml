@@ -13,6 +13,8 @@ dependencies = [
     "python-dotenv (>=1.0.1,<2.0.0)",
     "requests (>=2.32.3,<3.0.0)",
     "sqlalchemy (>=2.0.39,<3.0.0)",
+    "flask-apscheduler (>=1.13.1,<2.0.0)",
+    "pytz (>=2025.1,<2026.0)",
 ]
 
 [tool.poetry]

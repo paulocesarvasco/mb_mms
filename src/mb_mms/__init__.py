@@ -17,5 +17,10 @@ def create_app():
     from mb_mms.services.mb_api import commands as mb_commads
     app.cli.add_command(mb_commads.populate_db)
 
+    from mb_mms.services.job.scheduler import Scheduler
+    app.config["SCHEDULER_API_ENABLED"] = True
+    s = Scheduler()
+    s.scheduler.init_app(app)
+    s.scheduler.start()
 
     return app

@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock
 import pytest
 from sqlalchemy.orm import Session
-from src.mb_mms.services.data.db import get_db_engine, get_db_session
+from mb_mms.services.data.db import get_db_engine, get_db_session
 from flask import Flask, g
 
 @pytest.fixture

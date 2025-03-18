@@ -46,6 +46,9 @@ class MB_API:
 
     def sliding_mms(self, delta:int, rates=None):
         assert rates is not None
+        if delta < 1:
+            return []
+
         mms = []
         delta_offset = delta - 1
         try:

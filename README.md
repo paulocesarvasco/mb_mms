@@ -62,6 +62,11 @@ poetry run gunicorn -w 4 -b 0.0.0.0:8000 "mb_mms.wsgi:app"
 ```
 
 #### Development mode
+To configure the environment execute:
+```sh
+poetry run python scripts/define_env.py
+```
+
 To run the application using Flask:
 ```sh
 poetry run flask --app mb_mms run

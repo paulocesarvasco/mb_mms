@@ -37,7 +37,6 @@ Ensure you have the following installed:
    ```sh
    poetry install
    ```
-3. Configure the database connection in the `.env` file.
 
 ## Usage
 ### Initialize the Database

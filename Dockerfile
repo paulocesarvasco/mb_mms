@@ -9,9 +9,10 @@ ENV PATH="/root/.local/bin:${PATH}"
 
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    build-essential
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Poetry with pip --user
 RUN pip install --user poetry==$POETRY_VERSION

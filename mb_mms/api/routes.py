@@ -5,9 +5,13 @@ from flask import jsonify
 from mb_mms.services.mb_api import mb_api
 from . import currency_bp
 from flask import request
+import logging
+
+logger = logging.getLogger('views')
 
 @currency_bp.route('/', methods=['GET'])
 def root():
+    logger.info('home page accessed')
     return '<p>Currency MMS initial page!</p>'
 
 
@@ -34,6 +38,8 @@ def search(pair):
         return jsonify(res)
 
     except ValueError:
+        logger.error('missed mandatory query parameters')
         return 'missed mandatory query parameters', HTTPStatus.BAD_REQUEST
     except Exception as err:
+        logger.error(str(err))
         return str(err), HTTPStatus.INTERNAL_SERVER_ERROR

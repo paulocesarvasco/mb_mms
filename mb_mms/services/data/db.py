@@ -1,9 +1,9 @@
+import logging
 import os
 
 from flask import current_app, g
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
-
 
 def get_db_engine():
     if 'db' not in g:
@@ -24,6 +24,8 @@ def exec_migrations():
             try:
                 [session.execute(text(stmt)) for stmt in stmts if stmt != '']
                 session.commit()
+                logging.info('migrations statements committed')
             except Exception as err:
                 session.rollback()
-                print('migration error: ', err)
+                logging.error('migrations rollbacked')
+                logging.debug(err)

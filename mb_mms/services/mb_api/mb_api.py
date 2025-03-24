@@ -1,3 +1,4 @@
+import logging
 import os
 from typing import Any, List, Tuple
 from requests import  HTTPError, Session
@@ -38,21 +39,21 @@ class MB_API:
             res = session.get(url)
 
             if res.status_code != HTTPStatus.OK:
-                print(res.text)
+                logging.error(res.text)
                 res.raise_for_status()
 
             data = res.json()
             return [(register['close'], register['timestamp']) for register in data['candles']]
 
         except ValueError as err:
-            print('parameters error:', err)
-            return []
+            logging.error('parameters error: {}',format(err))
         except HTTPError as err:
-            print('request error:', err)
-            return []
+            logging.error('request error: {}',format(err))
         except Exception as err:
-            print('unexpected error:', err)
+            logging.error('unexpected error: {}',format(err))
+        finally:
             return []
+
 
     def mms(self, rates: List[Tuple[Any, Any]]):
         """
@@ -66,6 +67,7 @@ class MB_API:
                               Returns (0, 0) if the rates list is empty.
         """
         if len(rates) == 0:
+            logging.warning('empty rates list')
             return (0, 0)
 
         return (sum([rate[0] for rate in rates]) / len(rates), rates[len(rates) - 1][1])
@@ -85,6 +87,7 @@ class MB_API:
         """
         assert rates is not None
         if delta < 1:
+            logging.debug('delta invalid value')
             return []
 
         mms = []
@@ -98,7 +101,7 @@ class MB_API:
                 mms.append(self.mms(slice_rates))
             return mms
         except Exception as err:
-            print(err)
+            logging.error(err)
             return []
 
     def search_mms(self, pair: str, start: int, end: int, precision: int):

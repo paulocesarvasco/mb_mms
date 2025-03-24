@@ -1,3 +1,4 @@
+import logging
 import os
 import time
 import pytz
@@ -36,12 +37,14 @@ class Scheduler:
         self.max_retries = max_retries
         self.attempts = 0
 
+        logging.info('scheduler configured')
+
 
     def register_retry(self):
         self.attempts += 1
         if self.attempts > self.max_retries:
             # TODO: throw alert
-            print('maximum retries reached')
+            logging.warning('maximum retries reached')
 
 
     @retry(wait=wait_fixed(600))
@@ -83,5 +86,5 @@ class Scheduler:
 
         except Exception as e:
             self.register_retry()
-            print(e)
+            logging.error(e)
             raise e

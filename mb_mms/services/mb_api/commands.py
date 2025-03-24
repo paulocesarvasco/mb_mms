@@ -1,3 +1,4 @@
+import logging
 import os
 import click
 import time
@@ -56,7 +57,7 @@ def populate_db():
         mms_200 = mb.sliding_mms(delta=200, rates=rates)
 
         if len(mms_20) != len(mms_50) != len(mms_200):
-            click.echo(message='inconsistent rates', err=True)
+            logging.error('inconsistent rates: calculated {}, {} and {} mms'.format(len(mms_20), len(mms_50), len(mms_200)))
             return
 
         with Session(db.get_db_engine()) as session, session.begin():
@@ -67,9 +68,9 @@ def populate_db():
                     obj.timestamp, obj.pair = mms_20[idx][1], pair
                     session.add(obj)
                 session.commit()
+                logging.info('mms from {} to {} committed'.format(start_time_unix, end_time_unix))
             except Exception as err:
                 session.rollback()
-                click.echo(message=err, err=True, color=True)
+                logging.error('failed to save mms from {} to {}'.format(start_time_unix, end_time_unix))
+                logging.error(err)
                 return
-
-    click.echo('Database populated.')

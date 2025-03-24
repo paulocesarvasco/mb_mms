@@ -1,11 +1,11 @@
 from flask import Flask
 from dotenv import load_dotenv
-
+import mb_mms.utils.logs as _
 
 def create_app():
-    load_dotenv()
-
     app = Flask(__name__)
+
+    load_dotenv()
 
     from mb_mms.api.routes import currency_bp
     app.register_blueprint(currency_bp)
@@ -22,4 +22,5 @@ def create_app():
     s = Scheduler(app)
     s.scheduler.start()
 
+    app.logger.info('Application initialized')
     return app
